@@ -10,7 +10,7 @@ npm install
 1. Создайте файл `.env` в корне проекта
 2. Скопируйте туда:
 ```
-PORT=5000
+PORT=5001
 TELEGRAM_BOT_TOKEN=ваш_токен_бота
 TELEGRAM_CHAT_ID=ваш_chat_id
 ```

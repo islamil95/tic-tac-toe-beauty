@@ -129,7 +129,7 @@ function App() {
         } else if (error.request) {
           console.error('  Запрос не отправлен. Возможно, сервер не запущен')
           console.error('  URL:', error.config?.url)
-          alert(`Промокод: ${code}\n\n❌ Сервер недоступен! Убедитесь, что сервер запущен на порту 5000.`)
+          alert(`Промокод: ${code}\n\n❌ Сервер недоступен! Убедитесь, что сервер запущен на порту 5001.`)
         } else {
           console.error('  Ошибка:', error.message)
           alert(`Промокод: ${code}\n\n❌ Ошибка: ${error.message}`)

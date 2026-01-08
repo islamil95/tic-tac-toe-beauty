@@ -21,7 +21,7 @@ npm install
 
 Создайте файл `.env` в корне проекта:
 ```env
-PORT=5000
+PORT=5001
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
 TELEGRAM_CHAT_ID=your_telegram_chat_id_here
 ```

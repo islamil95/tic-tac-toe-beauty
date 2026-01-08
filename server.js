@@ -23,7 +23,7 @@ if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
 }
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Простая CORS - разрешаем всё
 app.use((req, res, next) => {
@@ -95,8 +95,8 @@ app.listen(PORT, () => {
 }).on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
     console.error(`\n❌ Порт ${PORT} уже занят!`);
-    console.error('💡 Выполните: lsof -ti:5000 | xargs kill -9');
-    console.error('   Или закройте другие процессы, использующие порт 5000\n');
+    console.error(`💡 Выполните: lsof -ti:${PORT} | xargs kill -9`);
+    console.error(`   Или закройте другие процессы, использующие порт ${PORT}\n`);
     process.exit(1);
   }
 });
