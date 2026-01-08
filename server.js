@@ -2,10 +2,20 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import axios from 'axios';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
-// Проверка настроек Telegram при старте
+// Настройка путей для ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+// На Render порт выдается автоматически через переменную, или 5001
+const PORT = process.env.PORT || 5001;
+
+// Проверка телеграма
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
@@ -22,9 +32,6 @@ if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
   console.log('');
 }
 
-const app = express();
-const PORT = process.env.PORT || 5001;
-
 // Простая CORS - разрешаем всё
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -36,19 +43,18 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-// Тестовый маршрут
+// --- API ROUTES ---
 app.get('/api/test', (req, res) => {
   res.json({ success: true, message: 'Сервер работает!' });
 });
 
- 
 app.post('/api/game-end', async (req, res) => {
   try {
     const { result, promoCode } = req.body;
     console.log('📨 Получен запрос:', { result, promoCode });
 
     if (result === 'win' && promoCode) {
- 
+      // ТОЧНО ТАКОЙ ЖЕ КОД КАК В check-telegram.js (строки 28-33)
       const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
       const message = `Победа! Промокод выдан: ${promoCode}`;
       
@@ -90,8 +96,17 @@ app.post('/api/game-end', async (req, res) => {
   }
 });
 
+// --- ГЛАВНАЯ МАГИЯ: ОТДАЕМ REACT ---
+// 1. Говорим Express'у, где лежат статические файлы (сборка React)
+app.use(express.static(path.join(__dirname, 'dist')));
+
+// 2. Любой запрос, который не API, отправляем на index.html (чтобы React запустился)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 }).on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
     console.error(`\n❌ Порт ${PORT} уже занят!`);
